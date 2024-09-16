@@ -1,0 +1,493 @@
+:root {
+    --primary-color: #1a2a6c;
+    --secondary-color: #b21f1f;
+    --accent-color: #fdbb2d;
+    --text-color: #ffffff;
+    --background-color: #121212;
+    --surface-color: rgba(255, 255, 255, 0.1);
+    --error-color: #ff4444;
+    --success-color: #00C851;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: var(--text-color);
+}
+
+@keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+.app-container {
+    max-width: 800px;
+    margin: 0 auto 80px auto;
+    padding: 20px;
+    background: var(--surface-color);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 36px;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+header p {
+    font-size: 18px;
+    opacity: 0.8;
+}
+
+.note-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.note {
+    background: var(--surface-color);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.note:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.note img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    align-self: center;
+}
+
+.note p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.note-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.note-actions button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+}
+
+.note-actions button:hover {
+    color: var(--accent-color);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--surface-color);
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.modal h2 {
+    margin-top: 0;
+    color: var(--accent-color);
+}
+
+.modal textarea,
+.modal input[type="text"],
+.modal input[type="file"],
+.modal select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: var(--text-color);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+}
+
+.btn-secondary {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    margin-right: 10px;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-keypad {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface-color);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.mobile-keypad button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobile-keypad button:hover {
+    color: var(--accent-color);
+}
+
+.message {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.message.error {
+    background-color: var(--error-color);
+    color: var(--text-color);
+}
+
+.message.success {
+    background-color: var(--success-color);
+    color: var(--text-color);
+}
+
+/* Estilos para la página de usuarios */
+.user-management {
+    background: var(--surface-color);
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 30px;
+}
+
+.user-form {
+    margin-bottom: 30px;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-table th,
+.user-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-table th {
+    background-color: rgba(255, 255, 255, 0.05);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.user-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.user-actions button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-user {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+}
+
+.delete-user {
+    background-color: var(--error-color);
+    color: var(--text-color);
+}
+
+.user-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para el login */
+.login-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 300px;
+    margin: 50px auto;
+}
+
+.login-header h1 {
+    color: #ffffff;
+    margin: 0;
+    font-size: 28px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.login-header p {
+    color: #ffffff;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.code-display {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.code-digit {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.code-digit.active {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.keypad-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.keypad-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.keypad-btn:active {
+    transform: scale(0.95);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .app-container {
+        margin: 0 10px 70px 10px;
+        width: calc(100% - 20px);
+        padding: 15px;
+    }
+
+    .note {
+        width: calc(100% - 30px);
+    }
+
+    .note p {
+        font-size: 14px;
+    }
+
+    .note-actions button {
+        font-size: 16px;
+    }
+
+    .user-table, .user-table thead, .user-table tbody, .user-table th, .user-table td, .user-table tr {
+        display: block;
+    }
+
+    .user-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .user-table tr {
+        margin-bottom: 15px;
+    }
+
+    .user-table td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .user-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+
+    .mobile-keypad {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-container {
+        margin: 0 5px 60px 5px;
+        width: calc(100% - 10px);
+        padding: 10px;
+    }
+
+    .note {
+        width: calc(100% - 20px);
+        padding: 15px;
+    }
+
+    .mobile-keypad {
+        padding: 5px;
+    }
+
+    .mobile-keypad button {
+        font-size: 16px;
+        padding: 6px 2px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mobile-keypad button {
+        font-size: 14px;
+        padding: 4px 1px;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.note, .modal-content, .user-management {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.note {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+.keypad-btn:focus {
+    outline: none;
+    animation: pulse 1.5s infinite;
+}

@@ -1,0 +1,20 @@
+/var/www/
+├── html/  (directorio público)
+│   ├── dashboard.php
+│   ├── dashboard.js
+│   ├── delete_note.php
+│   ├── get_notes.php
+│   ├── index.php
+│   ├── keypad.css
+│   ├── keypad.js
+│   ├── login.php
+│   ├── logout.php
+│   ├── profile.php
+│   ├── save_note.php
+│   ├── styles.css
+│   ├── tutorial.php
+│   └── usuarios.php
+├── uploads/
+└── private/
+    ├── .htaccess
+    └── users.php
