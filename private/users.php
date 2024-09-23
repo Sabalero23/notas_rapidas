@@ -1,8 +1,13 @@
 <?php
 return array (
-  'e10adc3949ba59abbe56e057f20f883e' => 
+  'c33367701511b4f6020ec61ded352059' => 
   array (
-    'username' => 'Admin',
+    'username' => 'Martin',
+    'role' => 'user',
+  ),
+  '7620a9e9628e55159954d6cd3dab8672' => 
+  array (
+    'username' => 'Paloma',
     'role' => 'admin',
   ),
 );

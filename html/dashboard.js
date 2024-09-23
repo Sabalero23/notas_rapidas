@@ -3,12 +3,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const noteModal = document.getElementById('noteModal');
     const searchModal = document.getElementById('searchModal');
     const settingsModal = document.getElementById('settingsModal');
+    const shareNoteModal = document.getElementById('shareNoteModal');
     const closeModal = document.getElementById('closeModal');
     const closeSearchModal = document.getElementById('closeSearchModal');
     const closeSettingsModal = document.getElementById('closeSettingsModal');
+    const closeShareModal = document.getElementById('closeShareModal');
     const saveNote = document.getElementById('saveNote');
+    const shareNoteButton = document.getElementById('shareNote');
     const noteText = document.getElementById('noteText');
     const noteImage = document.getElementById('noteImage');
+    const shareWithUserId = document.getElementById('shareWithUserId');
     const mobileKeypad = document.getElementById('mobileKeypad');
     const modalTitle = document.getElementById('modalTitle');
     const searchInput = document.getElementById('searchInput');
@@ -16,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeSelect = document.getElementById('themeSelect');
     const saveSettings = document.getElementById('saveSettings');
     let currentNoteId = null;
+    let currentNoteIdToShare = null;
 
     // Inicialización de ClipboardJS
     new ClipboardJS('.copy-note', {
@@ -29,12 +34,13 @@ document.addEventListener('DOMContentLoaded', function() {
     closeModal.addEventListener('click', () => closeModalFunction(noteModal));
     closeSearchModal.addEventListener('click', () => closeModalFunction(searchModal));
     closeSettingsModal.addEventListener('click', () => closeModalFunction(settingsModal));
+    closeShareModal.addEventListener('click', () => closeModalFunction(shareNoteModal));
     saveNote.addEventListener('click', handleSaveNote);
+    shareNoteButton.addEventListener('click', handleShareNote);
     noteContainer.addEventListener('click', handleNoteContainerClick);
     performSearch.addEventListener('click', handlePerformSearch);
     saveSettings.addEventListener('click', handleSaveSettings);
 
-    // Funciones de manejo de eventos
     function handleMobileKeypadClick(e) {
         const button = e.target.closest('.keypad-btn');
         if (!button) return;
@@ -91,6 +97,67 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error:', error));
     }
 
+    function handleShareNote() {
+        if (!currentNoteIdToShare) {
+            alert('Por favor, selecciona una nota para compartir');
+            return;
+        }
+
+        fetch('get_users.php')
+        .then(response => response.json())
+        .then(users => {
+            const userList = Object.entries(users)
+                .filter(([id, user]) => id !== currentUserId)
+                .map(([id, user]) => `<option value="${id}">${user.username}</option>`)
+                .join('');
+
+            const selectHtml = `
+                <select id="shareWithUserId">
+                    <option value="">Selecciona un usuario</option>
+                    ${userList}
+                </select>
+            `;
+
+            document.getElementById('shareWithUserId').outerHTML = selectHtml;
+
+            openShareNoteModal();
+        })
+        .catch(error => {
+            console.error('Error al obtener la lista de usuarios:', error);
+            alert('Error al cargar la lista de usuarios');
+        });
+    }
+
+    function performShareNote() {
+        const shareWithUserId = document.getElementById('shareWithUserId').value;
+        if (!shareWithUserId) {
+            alert('Por favor, selecciona un usuario para compartir la nota');
+            return;
+        }
+
+        fetch('share_note.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `noteId=${encodeURIComponent(currentNoteIdToShare)}&shareWithUserId=${encodeURIComponent(shareWithUserId)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                closeModalFunction(shareNoteModal);
+                loadNotes();
+            } else {
+                alert('Error al compartir la nota: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al compartir la nota: ' + error.message);
+        });
+    }
+
     function handleNoteContainerClick(e) {
         const noteDiv = e.target.closest('.note');
         if (!noteDiv) return;
@@ -104,6 +171,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (confirm('¿Estás seguro de que quieres eliminar esta nota?')) {
                 deleteNote(noteDiv.dataset.id);
             }
+        } else if (e.target.classList.contains('share-note') || e.target.parentNode.classList.contains('share-note')) {
+            currentNoteIdToShare = noteDiv.dataset.id;
+            handleShareNote();
         }
     }
 
@@ -128,7 +198,6 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModalFunction(settingsModal);
     }
 
-    // Funciones auxiliares
     function openNoteModal() {
         if (currentNoteId === null) {
             noteText.value = '';
@@ -149,8 +218,14 @@ document.addEventListener('DOMContentLoaded', function() {
         settingsModal.style.display = 'block';
     }
 
+    function openShareNoteModal() {
+        shareNoteModal.style.display = 'block';
+    }
+
     function closeModalFunction(modal) {
         modal.style.display = 'none';
+        currentNoteId = null;
+        currentNoteIdToShare = null;
     }
 
     function deleteNote(id) {
@@ -159,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `id=${id}`
+            body: `id=${encodeURIComponent(id)}`
         })
         .then(response => response.json())
         .then(data => {
@@ -173,36 +248,52 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadNotes() {
-        fetch('get_notes.php')
-        .then(response => response.json())
-        .then(data => {
-            noteContainer.innerHTML = '';
-            if (Array.isArray(data)) {
-                data.forEach((note, index) => {
-                    const noteDiv = document.createElement('div');
-                    noteDiv.className = 'note';
-                    noteDiv.dataset.id = index;
-                    noteDiv.innerHTML = `
-                        ${note.image ? `<img src="${note.image}" alt="Imagen de la nota">` : ''}
-                        <p>${note.text}</p>
-                        <div class="note-actions">
+    fetch('get_notes.php')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        noteContainer.innerHTML = '';
+        if (Array.isArray(data)) {
+            data.forEach(note => {
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note';
+                noteDiv.dataset.id = note.id;
+                const isOwner = String(note.owner) === String(currentUserId);
+                noteDiv.innerHTML = `
+                    ${note.image ? `<img src="${note.image}" alt="Imagen de la nota">` : ''}
+                    <p>${note.text}</p>
+                    <br>
+                    <div class="note-info">
+                        <span>Creada Por: ${note.owner_name}</span>
+                        <span>Compartida con: ${note.shared_with_names.length} usuario(s)</span>
+                    </div>
+                    <div class="note-actions">
+                        ${isOwner ? `
                             <button class="edit-note" title="Editar"><i class="fas fa-edit"></i></button>
-                            <button class="copy-note" title="Copiar"><i class="fas fa-copy"></i></button>
                             <button class="delete-note" title="Eliminar"><i class="fas fa-trash"></i></button>
-                        </div>
-                    `;
-                    noteContainer.appendChild(noteDiv);
-                });
-            } else {
-                console.error('Los datos recibidos no son un array:', data);
-                noteContainer.innerHTML = '<p>Error al cargar las notas. Por favor, intenta de nuevo más tarde.</p>';
-            }
-        })
-        .catch(error => {
-            console.error('Error loading notes:', error);
-            noteContainer.innerHTML = '<p>Error al cargar las notas. Por favor, intenta de nuevo más tarde.</p>';
-        });
-    }
+                            <button class="share-note" title="Compartir"><i class="fas fa-share"></i></button>
+                        ` : ''}
+                        <button class="copy-note" title="Copiar"><i class="fas fa-copy"></i></button>
+                    </div>
+                `;
+                noteContainer.appendChild(noteDiv);
+            });
+        } else {
+            throw new Error('Los datos recibidos no son un array');
+        }
+    })
+    .catch(error => {
+        console.error('Error loading notes:', error);
+        noteContainer.innerHTML = `<p>Error al cargar las notas: ${error.message}. Por favor, intenta de nuevo más tarde.</p>`;
+    });
+}
 
     function sortNotes() {
         const notes = Array.from(noteContainer.children);
@@ -220,4 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (savedTheme) {
         document.body.className = savedTheme;
     }
+
+    // Asegúrate de que el evento click del botón de compartir llame a la función performShareNote
+    document.getElementById('shareNote').addEventListener('click', performShareNote);
 });

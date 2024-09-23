@@ -10,7 +10,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Seguro - Sistema Futurista</title>
+    <title>Acceso</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="keypad.css">
@@ -18,7 +18,7 @@ if (isset($_SESSION['user_id'])) {
 <body>
     <div class="login-container">
         <div class="login-header">
-            <h1>Acceso Seguro</h1>
+            <h1>Ingresar</h1>
             <p>Sistema de Notas Avanzado</p>
         </div>
         <div class="keypad-container">

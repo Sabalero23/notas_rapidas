@@ -4,16 +4,16 @@
 │   ├── dashboard.js
 │   ├── delete_note.php
 │   ├── get_notes.php
+│   ├── get_users.php
 │   ├── index.php
-│   ├── keypad.css
-│   ├── keypad.js
 │   ├── login.php
 │   ├── logout.php
-│   ├── profile.php
 │   ├── save_note.php
+│   ├── share_note.php
+│   ├── script.js
 │   ├── styles.css
-│   ├── tutorial.php
-│   └── usuarios.php
+│   ├── usuarios.php
+│   └── profile.php
 ├── uploads/
 └── private/
     ├── .htaccess

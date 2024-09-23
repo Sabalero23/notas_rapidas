@@ -5,31 +5,25 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-function getUserNotes($userId) {
-    $notesFile = __DIR__ . "/../private/notes_{$userId}.json";
-    if (file_exists($notesFile)) {
-        return json_decode(file_get_contents($notesFile), true);
-    }
-    return [];
-}
-
-$userNotes = getUserNotes($_SESSION['user_id']);
+$userId = $_SESSION['user_id'];
+$username = $_SESSION['username'];
+$role = $_SESSION['role'];
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Notas Rápidas</title>
+    <title>Dashboard - Sistema de Notas</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-user-id="<?php echo htmlspecialchars($userId); ?>">
     <div class="app-container">
         <header>
-            <h1>Notas Rápidas</h1>
-            <p>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?></p>
+            <h1>Sistema de Notas</h1>
+            <p>Bienvenido, <?php echo htmlspecialchars($username); ?></p>
         </header>
         
         <main>
@@ -43,7 +37,7 @@ $userNotes = getUserNotes($_SESSION['user_id']);
         <button class="keypad-btn" data-action="newNote"><i class="fas fa-plus"></i></button>
         <button class="keypad-btn" data-action="searchNotes"><i class="fas fa-search"></i></button>
         <button class="keypad-btn" data-action="sortNotes"><i class="fas fa-sort"></i></button>
-        <?php if ($_SESSION['role'] === 'admin'): ?>
+        <?php if ($role === 'admin'): ?>
             <button class="keypad-btn" data-action="manageUsers"><i class="fas fa-users"></i></button>
         <?php else: ?>
             <button class="keypad-btn" data-action="editProfile"><i class="fas fa-user-edit"></i></button>
@@ -52,6 +46,7 @@ $userNotes = getUserNotes($_SESSION['user_id']);
         <button class="keypad-btn" data-action="logout"><i class="fas fa-sign-out-alt"></i></button>
     </nav>
 
+    <!-- Modal para crear/editar notas -->
     <div id="noteModal" class="modal" style="display: none;">
         <div class="modal-content">
             <h2 id="modalTitle">Crear Nota</h2>
@@ -64,6 +59,7 @@ $userNotes = getUserNotes($_SESSION['user_id']);
         </div>
     </div>
 
+    <!-- Modal para buscar notas -->
     <div id="searchModal" class="modal" style="display: none;">
         <div class="modal-content">
             <h2>Buscar Notas</h2>
@@ -75,6 +71,7 @@ $userNotes = getUserNotes($_SESSION['user_id']);
         </div>
     </div>
 
+    <!-- Modal para configuraciones -->
     <div id="settingsModal" class="modal" style="display: none;">
         <div class="modal-content">
             <h2>Configuraciones</h2>
@@ -90,7 +87,22 @@ $userNotes = getUserNotes($_SESSION['user_id']);
         </div>
     </div>
 
+    <!-- Modal para compartir notas -->
+    <div id="shareNoteModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Compartir Nota</h2>
+            <input type="text" id="shareWithUserId" placeholder="ID del usuario para compartir">
+            <div class="modal-actions">
+                <button id="shareNote" class="btn-primary">Compartir</button>
+                <button id="closeShareModal" class="btn-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+    <script>
+        const currentUserId = "<?php echo htmlspecialchars($userId); ?>";
+    </script>
     <script src="dashboard.js"></script>
 </body>
 </html>

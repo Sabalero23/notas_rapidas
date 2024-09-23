@@ -12,7 +12,17 @@ $notes = file_exists($notesFile) ? json_decode(file_get_contents($notesFile), tr
 $noteText = $_POST['text'] ?? '';
 $noteId = $_POST['id'] ?? null;
 
-$noteData = ['text' => $noteText, 'timestamp' => time()];
+if ($noteId === null) {
+    $noteId = 'note_' . $userId . '_' . uniqid();
+}
+
+$noteData = [
+    'id' => $noteId,
+    'text' => $noteText,
+    'timestamp' => time(),
+    'owner' => $userId,
+    'shared_with' => []
+];
 
 if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
     $imageDir = __DIR__ . "/uploads/{$userId}/";
@@ -26,14 +36,17 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
     }
 }
 
-if ($noteId !== null && isset($notes[$noteId])) {
-    $notes[$noteId] = $noteData;
+$noteIndex = array_search($noteId, array_column($notes, 'id'));
+if ($noteIndex !== false) {
+    // Actualizar nota existente
+    $notes[$noteIndex] = $noteData;
 } else {
+    // Añadir nueva nota
     $notes[] = $noteData;
 }
 
-if (file_put_contents($notesFile, json_encode($notes)) === false) {
+if (file_put_contents($notesFile, json_encode($notes, JSON_PRETTY_PRINT)) === false) {
     die(json_encode(['success' => false, 'message' => 'Error al guardar la nota']));
 }
 
-echo json_encode(['success' => true]);
+echo json_encode(['success' => true, 'noteId' => $noteId]);

@@ -1,11 +1,12 @@
 # Sistema de Notas Rápidas
 
 ## Descripción
-Este es un sistema de notas rápidas desarrollado en PHP. Permite a los usuarios crear, editar, eliminar y buscar notas, así como adjuntar imágenes a las mismas. El sistema incluye autenticación de usuarios, roles de usuario (admin y user), y un panel de administración para gestionar usuarios.
+Este es un sistema de notas rápidas desarrollado en PHP. Permite a los usuarios crear, editar, eliminar, buscar y compartir notas, así como adjuntar imágenes a las mismas. El sistema incluye autenticación de usuarios, roles de usuario (admin y user), un panel de administración para gestionar usuarios y la capacidad de compartir notas entre usuarios.
 
 ## Características principales
 - Autenticación de usuarios mediante código numérico
 - Creación, edición y eliminación de notas
+- Compartir notas entre usuarios
 - Adjuntar imágenes a las notas
 - Búsqueda y ordenación de notas
 - Cambio de tema (claro/oscuro)
@@ -13,10 +14,17 @@ Este es un sistema de notas rápidas desarrollado en PHP. Permite a los usuarios
 - Perfil de usuario editable (para usuarios no administradores)
 - Diseño responsive para dispositivos móviles
 
+## Nuevas características
+- Compartir notas: Los usuarios pueden compartir sus notas con otros usuarios del sistema.
+- Visualización de notas compartidas: Los usuarios pueden ver tanto sus propias notas como las que otros han compartido con ellos.
+- Información de propiedad: Cada nota muestra el nombre del propietario y el número de usuarios con los que se ha compartido.
+- Selección de usuarios para compartir: Al compartir una nota, se muestra una lista desplegable con los usuarios disponibles.
+
 ## Requisitos del sistema
 - PHP 7.4 o superior
 - Servidor web (por ejemplo, Apache)
 - Permisos de escritura en el directorio de la aplicación para guardar notas e imágenes
+- Configuración adecuada de permisos para permitir la escritura en archivos de notas de otros usuarios
 
 ## Estructura de directorios
 ```
@@ -26,10 +34,12 @@ Este es un sistema de notas rápidas desarrollado en PHP. Permite a los usuarios
 │   ├── dashboard.js
 │   ├── delete_note.php
 │   ├── get_notes.php
+│   ├── get_users.php
 │   ├── index.php
 │   ├── login.php
 │   ├── logout.php
 │   ├── save_note.php
+│   ├── share_note.php
 │   ├── script.js
 │   ├── styles.css
 │   ├── usuarios.php
@@ -46,6 +56,7 @@ Este es un sistema de notas rápidas desarrollado en PHP. Permite a los usuarios
 3. Configure su servidor web para que el directorio `html/` sea el directorio raíz público.
 4. Asegúrese de que el archivo `.htaccess` en el directorio `private/` esté configurado correctamente para denegar el acceso directo.
 5. Cree un archivo `users.php` en el directorio `private/` con al menos un usuario administrador.
+6. Asegúrese de que PHP tenga permisos para escribir en los archivos de notas de todos los usuarios.
 
 ## Configuración inicial
 Edite el archivo `private/users.php` para añadir el primer usuario administrador:
@@ -64,11 +75,20 @@ return array(
 1. Acceda a la aplicación a través de su navegador web.
 2. Inicie sesión con el código de usuario (en este ejemplo, '123456').
 3. Use el panel de navegación para crear notas, buscar, cambiar la configuración o administrar usuarios (si es administrador).
+4. Para compartir una nota, haga clic en el icono de compartir en la nota deseada y seleccione el usuario con el que desea compartirla de la lista desplegable.
+
+## Compartir notas
+- Cada nota tiene un botón de compartir representado por un icono.
+- Al hacer clic en este botón, se abre un modal con una lista desplegable de usuarios disponibles.
+- Solo el propietario de una nota puede compartirla.
+- Los usuarios pueden ver tanto sus propias notas como las que otros han compartido con ellos.
+- Cada nota muestra el nombre del propietario y el número de usuarios con los que se ha compartido.
 
 ## Seguridad
 - Asegúrese de cambiar el código del usuario administrador después de la primera instalación.
 - Mantenga el directorio `private/` fuera del alcance público.
 - Considere implementar HTTPS para una comunicación segura.
+- Configure adecuadamente los permisos de los archivos para evitar accesos no autorizados.
 
 ## Contribución
 Las contribuciones son bienvenidas. Por favor, abra un issue o realice un pull request para sugerir cambios o mejoras.
