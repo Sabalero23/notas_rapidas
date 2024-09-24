@@ -24,6 +24,7 @@ $role = $_SESSION['role'];
         <header>
             <h1>Sistema de Notas</h1>
             <p>Bienvenido, <?php echo htmlspecialchars($username); ?></p>
+            <button id="toggleSharedNotes" class="btn-secondary">Mostrar notas compartidas</button>
         </header>
         
         <main>
@@ -91,7 +92,10 @@ $role = $_SESSION['role'];
     <div id="shareNoteModal" class="modal" style="display: none;">
         <div class="modal-content">
             <h2>Compartir Nota</h2>
-            <input type="text" id="shareWithUserId" placeholder="ID del usuario para compartir">
+            <select id="shareWithUserId">
+                <option value="">Selecciona un usuario</option>
+                <!-- Las opciones se cargarán dinámicamente -->
+            </select>
             <div class="modal-actions">
                 <button id="shareNote" class="btn-primary">Compartir</button>
                 <button id="closeShareModal" class="btn-secondary">Cancelar</button>

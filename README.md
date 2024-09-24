@@ -14,11 +14,13 @@ Este es un sistema de notas rápidas desarrollado en PHP. Permite a los usuarios
 - Perfil de usuario editable (para usuarios no administradores)
 - Diseño responsive para dispositivos móviles
 
-## Nuevas características
-- Compartir notas: Los usuarios pueden compartir sus notas con otros usuarios del sistema.
+## Actualizaciones recientes
+- Compartir notas: Los usuarios pueden ahora compartir sus notas con otros usuarios del sistema.
 - Visualización de notas compartidas: Los usuarios pueden ver tanto sus propias notas como las que otros han compartido con ellos.
+- Control de visibilidad: Se ha añadido un botón para mostrar/ocultar las notas compartidas por otros usuarios.
 - Información de propiedad: Cada nota muestra el nombre del propietario y el número de usuarios con los que se ha compartido.
 - Selección de usuarios para compartir: Al compartir una nota, se muestra una lista desplegable con los usuarios disponibles.
+- Inicialización mejorada: Las notas compartidas ahora están ocultas por defecto al iniciar sesión.
 
 ## Requisitos del sistema
 - PHP 7.4 o superior
@@ -58,24 +60,12 @@ Este es un sistema de notas rápidas desarrollado en PHP. Permite a los usuarios
 5. Cree un archivo `users.php` en el directorio `private/` con al menos un usuario administrador.
 6. Asegúrese de que PHP tenga permisos para escribir en los archivos de notas de todos los usuarios.
 
-## Configuración inicial
-Edite el archivo `private/users.php` para añadir el primer usuario administrador:
-
-```php
-<?php
-return array(
-  md5('123456') => array(
-    'username' => 'Admin',
-    'role' => 'admin',
-  ),
-);
-```
-
 ## Uso
 1. Acceda a la aplicación a través de su navegador web.
-2. Inicie sesión con el código de usuario (en este ejemplo, '123456').
+2. Inicie sesión con el código de usuario.
 3. Use el panel de navegación para crear notas, buscar, cambiar la configuración o administrar usuarios (si es administrador).
 4. Para compartir una nota, haga clic en el icono de compartir en la nota deseada y seleccione el usuario con el que desea compartirla de la lista desplegable.
+5. Use el botón "Mostrar notas compartidas" / "Ocultar notas compartidas" en la parte superior de la página para controlar la visibilidad de las notas compartidas por otros usuarios.
 
 ## Compartir notas
 - Cada nota tiene un botón de compartir representado por un icono.
@@ -83,6 +73,8 @@ return array(
 - Solo el propietario de una nota puede compartirla.
 - Los usuarios pueden ver tanto sus propias notas como las que otros han compartido con ellos.
 - Cada nota muestra el nombre del propietario y el número de usuarios con los que se ha compartido.
+- Los usuarios pueden ocultar o mostrar las notas compartidas por otros usuarios utilizando el botón de toggle en la parte superior de la página.
+- Por defecto, las notas compartidas están ocultas al iniciar sesión.
 
 ## Seguridad
 - Asegúrese de cambiar el código del usuario administrador después de la primera instalación.

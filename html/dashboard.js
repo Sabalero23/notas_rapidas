@@ -19,8 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const performSearch = document.getElementById('performSearch');
     const themeSelect = document.getElementById('themeSelect');
     const saveSettings = document.getElementById('saveSettings');
+    const toggleSharedNotesButton = document.getElementById('toggleSharedNotes');
     let currentNoteId = null;
     let currentNoteIdToShare = null;
+    let showSharedNotes = false;
 
     // Inicialización de ClipboardJS
     new ClipboardJS('.copy-note', {
@@ -36,10 +38,11 @@ document.addEventListener('DOMContentLoaded', function() {
     closeSettingsModal.addEventListener('click', () => closeModalFunction(settingsModal));
     closeShareModal.addEventListener('click', () => closeModalFunction(shareNoteModal));
     saveNote.addEventListener('click', handleSaveNote);
-    shareNoteButton.addEventListener('click', handleShareNote);
+    shareNoteButton.addEventListener('click', performShareNote);
     noteContainer.addEventListener('click', handleNoteContainerClick);
     performSearch.addEventListener('click', handlePerformSearch);
     saveSettings.addEventListener('click', handleSaveSettings);
+    toggleSharedNotesButton.addEventListener('click', toggleSharedNotes);
 
     function handleMobileKeypadClick(e) {
         const button = e.target.closest('.keypad-btn');
@@ -248,52 +251,53 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadNotes() {
-    fetch('get_notes.php')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.error) {
-            throw new Error(data.error);
-        }
-        noteContainer.innerHTML = '';
-        if (Array.isArray(data)) {
-            data.forEach(note => {
-                const noteDiv = document.createElement('div');
-                noteDiv.className = 'note';
-                noteDiv.dataset.id = note.id;
-                const isOwner = String(note.owner) === String(currentUserId);
-                noteDiv.innerHTML = `
-                    ${note.image ? `<img src="${note.image}" alt="Imagen de la nota">` : ''}
-                    <p>${note.text}</p>
-                    <br>
-                    <div class="note-info">
-                        <span>Creada Por: ${note.owner_name}</span>
-                        <span>Compartida con: ${note.shared_with_names.length} usuario(s)</span>
-                    </div>
-                    <div class="note-actions">
-                        ${isOwner ? `
-                            <button class="edit-note" title="Editar"><i class="fas fa-edit"></i></button>
-                            <button class="delete-note" title="Eliminar"><i class="fas fa-trash"></i></button>
-                            <button class="share-note" title="Compartir"><i class="fas fa-share"></i></button>
-                        ` : ''}
-                        <button class="copy-note" title="Copiar"><i class="fas fa-copy"></i></button>
-                    </div>
-                `;
-                noteContainer.appendChild(noteDiv);
-            });
-        } else {
-            throw new Error('Los datos recibidos no son un array');
-        }
-    })
-    .catch(error => {
-        console.error('Error loading notes:', error);
-        noteContainer.innerHTML = `<p>Error al cargar las notas: ${error.message}. Por favor, intenta de nuevo más tarde.</p>`;
-    });
-}
+        fetch('get_notes.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            noteContainer.innerHTML = '';
+            if (Array.isArray(data)) {
+                data.forEach(note => {
+                    const isOwner = String(note.owner) === String(currentUserId);
+                    if (isOwner || showSharedNotes) {
+                        const noteDiv = document.createElement('div');
+                        noteDiv.className = 'note';
+                        noteDiv.dataset.id = note.id;
+                        noteDiv.innerHTML = `
+                            ${note.image ? `<img src="${note.image}" alt="Imagen de la nota">` : ''}
+                            <p>${note.text}</p>
+                            <div class="note-info">
+                                <span>Propietario: ${note.owner_name}</span>
+                                <span>Compartida con: ${note.shared_with_names.length} usuario(s)</span>
+                            </div>
+                            <div class="note-actions">
+                                ${isOwner ? `
+                                    <button class="edit-note" title="Editar"><i class="fas fa-edit"></i></button>
+                                    <button class="delete-note" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                    <button class="share-note" title="Compartir"><i class="fas fa-share"></i></button>
+                                ` : ''}
+                                <button class="copy-note" title="Copiar"><i class="fas fa-copy"></i></button>
+                            </div>
+                        `;
+                        noteContainer.appendChild(noteDiv);
+                    }
+                });
+            } else {
+                throw new Error('Los datos recibidos no son un array');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading notes:', error);
+            noteContainer.innerHTML = `<p>Error al cargar las notas: ${error.message}. Por favor, intenta de nuevo más tarde.</p>`;
+        });
+    }
 
     function sortNotes() {
         const notes = Array.from(noteContainer.children);
@@ -303,15 +307,23 @@ document.addEventListener('DOMContentLoaded', function() {
         notes.forEach(note => noteContainer.appendChild(note));
     }
 
+    function toggleSharedNotes() {
+        showSharedNotes = !showSharedNotes;
+        loadNotes();
+        updateToggleButtonText();
+    }
+
+    function updateToggleButtonText() {
+        toggleSharedNotesButton.textContent = showSharedNotes ? 'Ocultar notas compartidas' : 'Mostrar notas compartidas';
+    }
+
     // Inicialización
     loadNotes();
+    updateToggleButtonText();
 
     // Aplicar tema guardado
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         document.body.className = savedTheme;
     }
-
-    // Asegúrate de que el evento click del botón de compartir llame a la función performShareNote
-    document.getElementById('shareNote').addEventListener('click', performShareNote);
 });
