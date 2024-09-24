@@ -61,18 +61,18 @@ Este es un sistema de notas rápidas desarrollado en PHP. Permite a los usuarios
 6. Asegúrese de que PHP tenga permisos para escribir en los archivos de notas de todos los usuarios.
 
 ## Configuración inicial
-Edite el archivo `private/users.php` para añadir el primer usuario administrador: (clave: 123456)
+Edite el archivo `private/users.php` para añadir el primer usuario administrador (clave: 123456):
 
+```php
 <?php
 return array (
-  'e10adc3949ba59abbe56e057f20f883e' => 
+    'e10adc3949ba59abbe56e057f20f883e' => 
   array (
     'username' => 'Administrador',
     'role' => 'admin',
   ),
 );
 ```
-
 
 ## Uso
 1. Acceda a la aplicación a través de su navegador web.
